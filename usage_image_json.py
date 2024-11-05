@@ -52,7 +52,7 @@ def save_cropped_images(image_path, boxes, output_folder, classes=None):
         # Zbuduj nazwę pliku dla wyciętego fragmentu
         if classes is not None and i < len(classes):
             class_name = classes[i]
-            output_path = os.path.join(output_folder, f"{class_name}_{i}.jpg")
+            output_path = os.path.join(output_folder, f"{class_name}.jpg")
         else:
             output_path = os.path.join(output_folder, f"crop_{i}.jpg")
 
@@ -60,6 +60,21 @@ def save_cropped_images(image_path, boxes, output_folder, classes=None):
         cv2.imwrite(output_path, cropped_image)
 
     print(f"Zapisano wycięte obrazy w folderze: {output_folder}")
+
+
+def get_cropped_images(image_path, boxes, classes):
+    image = cv2.imread(image_path)
+    if image is None:
+        print("Nie udało się wczytać obrazu. Sprawdź ścieżkę.")
+        return
+    cropped_images = []
+    for i, box in enumerate(boxes):
+        x, y, width, height = box
+        x, y, width, height = int(x), int(y), int(width), int(height)
+        cropped_image = image[y:y + height, x:x + width]
+        cropped_images.append((cropped_image, classes[i]))
+
+    return cropped_images
 
 
 def id_to_class(id):
@@ -74,11 +89,27 @@ def id_to_class(id):
         return data[str(id)]
 
 
+def load_all_images(dataset='train', less=21200):
+    images = []
+    with open('jsons/images.json', 'r') as file:
+        dict_data = json.load(file)
+    for i in range(0, less):
+        file_path = f'{dataset}\\images\\{dict_data[str(i)]['path']}'
+        bboxes = []
+        cats = []
+        for content in dict_data[str(i)]['annotations']:
+            bboxes.append(content['bbox'])
+            cats.append(content['class_id'])
+        images.extend(get_cropped_images(file_path, bboxes, cats))
+
+    return images
+
+
 if __name__ == '__main__':
     with open('jsons/images.json', 'r') as jsonfile:
         data = json.load(jsonfile)
-        # bierzemy obrazek o ID '0'
-        id = '0'
+        # bierzemy obrazek o ID '10000'
+        id = '10000'
         path = data[id]['path']
         boxes = []
         classes = []
@@ -89,4 +120,4 @@ if __name__ == '__main__':
         print(classes)
         print(id_to_class(classes))
         show_image_with_boxes(absolute_path, boxes, classes=id_to_class(classes))
-        save_cropped_images(absolute_path, boxes, 'cropped\\images')
+        save_cropped_images(absolute_path, boxes, 'cropped\\images', classes=id_to_class(classes))
