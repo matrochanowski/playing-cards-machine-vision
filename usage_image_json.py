@@ -3,7 +3,6 @@ import cv2
 import os
 import h5py
 import random
-from torchvision import transforms
 
 current_dir = os.path.dirname(__file__)
 
@@ -225,6 +224,34 @@ def load_all_cropped_images(dataset='train', less=21200):
             images.append((img, clas))
 
     return images
+
+
+def yield_images_with_bboxes(file_path, less=21200, reshape_to=256):
+    """Loads images and their bounding boxes from the specified dataset, resizing images to a given size.
+
+    Args:
+        file_path (str, optional): The dataset directory ('train' by default).
+        less (int, optional): Number of images to load (21200 by default).
+        reshape_to (int, optional): Size to resize images to (256x256 by default).
+
+    Yields:
+        tuple: A tuple containing a resized image and its corresponding bounding boxes.
+    """
+    with open(os.path.join(current_dir, 'jsons', 'images.json'), 'r') as file:
+        dict_data = json.load(file)
+    print('json file opened')
+
+    for i in range(0, less):
+        file_path = os.path.join(file_path, dict_data[str(i)]['path'])
+        print(file_path)
+        image = cv2.imread(file_path)
+        image = cv2.resize(image, (reshape_to, reshape_to))
+
+        card_classes = []
+        for card_class in dict_data[str(i)]['annotations']:
+            card_classes.append(id_to_class(card_class['class_id']))
+
+        yield image, card_classes
 
 
 def load_images_with_bboxes(dataset='train', less=21200, reshape_to=256):
