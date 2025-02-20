@@ -1,8 +1,7 @@
 # Playing Card Recognition with Constructive Neural Networks  
-**Authors**: Mateusz Trochanowski (272478), Miłosz Rojek (272453)  
 
 ## Problem Description  
-The goal of this project was to develop a model capable of recognizing playing cards in images. A key challenge was accurately identifying partially obscured cards or cards viewed from varying angles, reflecting how cards are typically held during social games.  
+The goal of this project was to develop a model capable of recognizing playing cards in images without using any pre-existing models e.g. YOLO. A key challenge was accurately identifying partially obscured cards or cards viewed from varying angles, reflecting how cards are typically held during social games. 
 
 ## Dataset Preparation  
 The dataset consists of **22,000 images**, each annotated with:  
@@ -37,9 +36,7 @@ A multi-stage process to detect cards without traditional object detection frame
    - Scale coordinates to original image dimensions  
 4. **Result Aggregation**: Sort detections by confidence  
 
-## Results & Performance  
-**F1-Score**: `0.55`  
-**Key Observations**:  
+## Performance  
 - Correctly detects all visible cards in **74%** of test cases  
 - Struggles with duplicate detections and similar-looking classes (e.g., "KS" vs "KC")  
 
@@ -53,5 +50,7 @@ A multi-stage process to detect cards without traditional object detection frame
 ![Detected Cards 3](karty3.png)  
 `Predicted: ['9C', 'KS', '4C', 'KC', 'AD']`  
 
-## Metrics  
-**F1-Score**: Harmonic mean of precision and recall:  
+### HOW TO USE
+You require python 3.ll or newer and the libraries listed in the requirements.txt file. 
+
+Run object_detection.py in classification folder. Paste your image's path into terminal. The program will return a list of cards it believes are in the picture and display found etiquettes on the picture. 
