@@ -2,6 +2,7 @@ from test_recognition import classify_image
 from image_segmentation import split_image, split_image_uneven
 from cropped_image_recognition.test_classification import classify_card
 import cv2
+import pathlib
 from PIL import Image
 import time
 import random
@@ -168,5 +169,26 @@ def calculate_card_probabilities(cards):
 
 
 if __name__ == '__main__':
-    image_path1 = 'path-to-your-image.jpg'
-    smart(image_path1)
+
+    while True:
+        try:
+            user_input = input("Enter image file path (or 'q' to quit): ").strip()
+
+            if user_input.lower() == 'q':
+                print("Exiting...")
+                break
+
+            path = pathlib.Path(user_input)
+
+            if not path.exists():
+                raise ValueError("Path does not exist")
+            valid_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'}
+            if path.suffix.lower() not in valid_extensions:
+                raise ValueError("File extension not recognized as image format")
+            if path.stat().st_size == 0:
+                raise ValueError("File is empty")
+            print(f"✅ Valid image file")
+
+            smart(cv2.imread(path))
+        except ValueError as ve:
+            print(f"❌ Validation error: {ve}")
