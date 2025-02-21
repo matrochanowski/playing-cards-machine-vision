@@ -1,4 +1,4 @@
-# Playing Card Recognition with Constructive Neural Networks  
+# Playing Card Recognition with constructive approach using two CNNs
 
 ## Problem Description  
 The goal of this project was to develop a model capable of recognizing playing cards in images without using any pre-existing models e.g. YOLO. A key challenge was accurately identifying partially obscured cards or cards viewed from varying angles, reflecting how cards are typically held during social games. 
